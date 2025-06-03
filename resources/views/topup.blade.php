@@ -42,25 +42,16 @@
                 <input type="hidden" name="amount" id="amount" required>
 
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                    @php
-                        $options = [
-                            ['100m', 4000], ['200m', 8000], ['300m', 12000], ['400m', 16000],
-                            ['500m', 20000], ['600m', 24000], ['700m', 28000], ['800m', 32000],
-                            ['900m', 36000], ['1b', 40000], ['1.5b', 70000], ['2b', 80000],
-                            ['2.5b', 125000], ['3b', 120000], ['4b', 160000], ['5b', 200000],
-                            ['6b', 270000], ['7b', 315000], ['8b', 360000], ['10b', 400000]
-                        ];
-                    @endphp
-
-                    @foreach ($options as [$label, $price])
-                        <div onclick="selectAmount({{ $price }})"
-                             class="nominal-card border border-gray-300 hover:border-blue-500 cursor-pointer rounded p-3 text-center transition">
-                            <p class="font-semibold">{{ $label }} Koin</p>
-                            <p class="text-sm text-gray-600">Rp {{ number_format($price, 0, ',', '.') }}</p>
+                    @foreach ($products as $product)
+                        <div onclick="selectAmount({{ $product->price }})"
+                            class="nominal-card border border-gray-300 hover:border-blue-500 cursor-pointer rounded p-3 text-center transition">
+                            <p class="font-semibold">{{ $product->label }} Koin</p>
+                            <p class="text-sm text-gray-600">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
                         </div>
                     @endforeach
                 </div>
             </section>
+
 
             <!-- Section 3: Pilih Metode Pembayaran -->
             <section class="mb-8">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Transaction;
+use App\Models\Product;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 
@@ -11,7 +12,8 @@ class TopupController extends Controller
 {
     public function showForm()
     {
-        return view('topup');
+        $products = Product::orderBy('price')->get();
+        return view('topup', compact('products'));
     }
 
    public function store(Request $request)
