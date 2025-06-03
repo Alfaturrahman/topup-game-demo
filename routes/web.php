@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 
 use App\Http\Controllers\TopupController;
 use App\Http\Controllers\TripayController;
@@ -10,7 +11,6 @@ Route::post('/topup', [TopupController::class, 'store']);
 
 //Triplay
 Route::post('/callback-tripay', [TripayController::class, 'handleCallback'])
-    ->withoutMiddleware('csrf');
-
+    ->withoutMiddleware([VerifyCsrfToken::class]);
 
 

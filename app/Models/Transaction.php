@@ -17,6 +17,8 @@ class Transaction extends Model
         'player_id', 
         'amount', 
         'payment_method', 
-        'status'
+        'status',
+        'merchant_ref',
     ];
+
 }
