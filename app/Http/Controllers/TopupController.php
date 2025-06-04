@@ -56,8 +56,8 @@ class TopupController extends Controller
                     'quantity' => 1,
                 ]
             ],
-            'callback_url'   => 'https://b48b-180-242-199-132.ngrok-free.app/callback-tripay',
-            'return_url'     => 'https://b48b-180-242-199-132.ngrok-free.app/topup',
+            'callback_url'   => 'https://9b9b-2404-c0-5221-5f79-897a-a08f-e1a4-5683.ngrok-free.app/callback-tripay',
+            'return_url'     => 'https://9b9b-2404-c0-5221-5f79-897a-a08f-e1a4-5683.ngrok-free.app/topup',
             'expired_time'   => time() + (60 * 60), // 1 jam
             'signature'      => hash_hmac('sha256', $merchantCode . $merchantRef . $request->amount, $privateKey),
         ];

@@ -12,5 +12,7 @@ class Product extends Model
     protected $fillable = [
         'label', // contoh: "1b", "2b"
         'price', // dalam rupiah
+        'event_name',
+        'discount_price',
     ];
 }

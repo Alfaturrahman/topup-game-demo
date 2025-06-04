@@ -43,10 +43,25 @@
 
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                     @foreach ($products as $product)
-                        <div onclick="selectAmount({{ $product->price }})"
-                            class="nominal-card border border-gray-300 hover:border-blue-500 cursor-pointer rounded p-3 text-center transition">
+                        <div onclick="selectAmount({{ $product->discount_price ?? $product->price }})"
+                            class="nominal-card border border-gray-300 hover:border-blue-500 cursor-pointer rounded p-3 text-center transition relative">
+
                             <p class="font-semibold">{{ $product->label }} Koin</p>
-                            <p class="text-sm text-gray-600">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
+
+                            @if($product->discount_price)
+                                <p class="text-sm text-gray-400 line-through">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
+                                <p class="text-sm text-red-600 font-bold">
+                                    Rp {{ number_format($product->discount_price, 0, ',', '.') }}
+                                </p>
+                                <span class="absolute bg-yellow-400 text-black text-xs px-3 py-0.5 rounded-bl shadow"
+                                    style="top: 10px; right: -20px; transform: rotate(25deg); transform-origin: top right; width: 70px; text-align: center; font-style: italic;">
+                                    {{ $product->event_name ?? 'Diskon' }}
+                                </span>
+
+                            @else
+                                <p class="text-sm text-gray-600">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
+                            @endif
+
                         </div>
                     @endforeach
                 </div>
