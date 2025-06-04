@@ -72,7 +72,7 @@ class AdminController extends Controller
 
     public function orders()
     {
-        $orders = Transaction::orderBy('created_at', 'DESC')->get();
+        $orders = Transaction::with('product')->orderBy('created_at', 'DESC')->get();
         return view('admin.orders', compact('orders'));
     }
 
@@ -83,12 +83,39 @@ class AdminController extends Controller
 
         $orders = Transaction::where('status', 'paid')
                         ->whereBetween('created_at', [$from, $to])
-                        ->get();        
+                        ->get();
 
         $totalIncome = $orders->sum('amount');
-        $totalOrders = $orders->count(); // ✅ Menambahkan total pesanan
+        $totalOrders = $orders->count();
 
-        return view('admin.income', compact('orders', 'totalIncome', 'totalOrders'));
+        // Group income per tanggal
+        $grouped = $orders->groupBy(function ($order) {
+            return $order->created_at->format('Y-m-d');
+        });
+
+        $labels = $grouped->keys()->toArray();
+        $data = $grouped->map(function ($dayOrders) {
+            return $dayOrders->sum('amount');
+        })->values()->toArray();
+
+        // Group jumlah pesanan per produk
+        $productOrders = $orders->groupBy('product_id')->map(function($items) {
+            return $items->count();
+        });
+
+        // Ambil nama produk sesuai product_id, misal:
+        $productNames = [];
+        foreach ($productOrders->keys() as $productId) {
+            $product = Product::find($productId);
+            $productNames[] = $product ? $product->name : 'Produk #' . $productId;
+        }
+
+        $productOrderCounts = $productOrders->values()->toArray();
+
+        return view('admin.income', compact(
+            'orders', 'totalIncome', 'totalOrders', 'labels', 'data', 
+            'productNames', 'productOrderCounts'
+        ));
     }
 
     public function applyBulkDiscount(Request $request)
@@ -128,6 +155,23 @@ class AdminController extends Controller
 
         return back()->with('success', 'Diskon produk berhasil dihapus.');
     }
+
+    public function uploadBukti(Request $request, Transaction $transaction)
+    {
+        $request->validate([
+            'bukti_pengiriman' => 'required|image|max:2048',
+        ]);
+        
+
+        $path = $request->file('bukti_pengiriman')->store('bukti_pengiriman', 'public');
+        $transaction->update([
+            'status_pengiriman' => true,
+            'bukti_pengiriman' => $path,
+        ]);
+
+        return redirect()->route('admin.orders')->with('success', 'Bukti pengiriman berhasil diunggah.');
+    }
+
 
 }
 

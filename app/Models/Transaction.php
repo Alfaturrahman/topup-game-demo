@@ -19,6 +19,14 @@ class Transaction extends Model
         'payment_method', 
         'status',
         'merchant_ref',
+        'status_pengiriman',
+        'bukti_pengiriman',
+        'product_id',
     ];
+    
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 
 }

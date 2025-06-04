@@ -27,12 +27,18 @@ class TopupController extends Controller
         // Buat merchant_ref unik
         $merchantRef = 'TOPUP-' . Str::upper(Str::random(10));
 
-        // Simpan ke database (optional, bisa juga setelah berhasil request)
+                // Cari produk berdasarkan harga (amount)
+        $product = Product::where('discount_price', $request->amount)
+                    ->orWhere('price', $request->amount)
+                    ->first();
+
         $transaction = Transaction::create([
             'player_id' => $request->player_id,
+            'product_id' => $product->id ?? null,
             'amount' => $request->amount,
             'payment_method' => $request->payment_method,
             'status' => 'pending',
+            'status_pengiriman' => false,
             'merchant_ref' => $merchantRef,
         ]);
 

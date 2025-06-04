@@ -12,7 +12,7 @@
         public function up()
         {
             Schema::table('products', function (Blueprint $table) {
-                $table->integer('discount_price')->nullable()->after('price');
+                // $table->integer('discount_price')->nullable()->after('price');
             });
         }
 

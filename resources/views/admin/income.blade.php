@@ -46,6 +46,20 @@
     </div>
 </div>
 
+<div class="flex flex-wrap gap-6 mb-8">
+  <!-- Card 1: Grafik Omset -->
+  <div class="bg-white shadow rounded-lg p-4 flex-1 max-w-[300px]">
+    <h3 class="text-base font-semibold text-gray-700 mb-3">Grafik Omset per Hari</h3>
+    <canvas id="incomeChart" height="120"></canvas>
+  </div>
+
+  <!-- Card 2: Doughnut Chart Pesanan -->
+  <div class="bg-white shadow rounded-lg p-4 w-full sm:w-auto" style="width: 300px;">
+    <h3 class="text-base font-semibold text-gray-700 mb-3">Jumlah Pesanan per Produk</h3>
+    <canvas id="productOrderChart" width="300" height="300"></canvas>
+  </div>
+</div>
+
 <table id="income-table" class="min-w-full bg-white shadow rounded overflow-hidden text-gray-700">
     <thead class="bg-gray-100 border-b border-gray-300">
         <tr>
@@ -72,4 +86,90 @@
         @endforelse
     </tbody>
 </table>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Line Chart Omset
+    const ctx = document.getElementById('incomeChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: @json($labels),
+            datasets: [{
+                label: 'Omset Harian (Rp)',
+                data: @json($data),
+                backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                borderColor: 'rgba(59, 130, 246, 1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.3,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: value => 'Rp ' + value.toLocaleString('id-ID')
+                    }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => 'Rp ' + ctx.parsed.y.toLocaleString('id-ID')
+                    }
+                }
+            }
+        }
+    });
+
+    // Doughnut Chart Pesanan Produk
+    const ctxProduct = document.getElementById('productOrderChart').getContext('2d');
+    const productData = {
+        labels: @json($productNames),
+        datasets: [{
+            label: 'Jumlah Pesanan',
+            data: @json($productOrderCounts),
+            backgroundColor: [
+                '#3b82f6', '#ef4444', '#f59e0b', '#10b981', '#8b5cf6',
+                '#ec4899', '#6366f1', '#f97316', '#14b8a6', '#22c55e'
+            ],
+            hoverOffset: 10,
+            borderWidth: 1,
+            borderColor: '#fff'
+        }]
+    };
+
+    const configProduct = {
+        type: 'doughnut',
+        data: productData,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: {
+                        boxWidth: 20,
+                        padding: 15,
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.label + ': ' + context.parsed + ' pesanan';
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    new Chart(ctxProduct, configProduct);
+});
+</script>
+
 @endsection

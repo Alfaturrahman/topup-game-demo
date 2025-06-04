@@ -25,4 +25,7 @@ Route::prefix('admin')->group(function () {
 
     Route::get('/orders', [AdminController::class, 'orders'])->name('admin.orders');
     Route::get('/income', [AdminController::class, 'income'])->name('admin.income');
+
+    Route::post('/orders/{transaction}/upload-bukti', [AdminController::class, 'uploadBukti'])->name('admin.orders.uploadBukti');
+
 });
