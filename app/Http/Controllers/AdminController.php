@@ -48,8 +48,10 @@ class AdminController extends Controller
         $orders = Transaction::where('status', 'paid')
                         ->whereBetween('created_at', [$from, $to])
                         ->get();        
-        $totalIncome = $orders->sum('amount');
 
-        return view('admin.income', compact('orders', 'totalIncome'));
+        $totalIncome = $orders->sum('amount');
+        $totalOrders = $orders->count(); // ✅ Menambahkan total pesanan
+
+        return view('admin.income', compact('orders', 'totalIncome', 'totalOrders'));
     }
 }
